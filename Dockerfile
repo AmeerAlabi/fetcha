@@ -9,13 +9,16 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies (include dev deps for build) then prune
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
 # Copy source and build
 COPY . .
 RUN npm run build
+
+# Remove dev dependencies to keep image slim
+RUN npm prune --production
 
 ENV NODE_ENV=production
 ENV PORT=3000
