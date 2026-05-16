@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetcha Admin</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1020;
+        --panel: rgba(14, 20, 40, 0.92);
+        --panel-2: rgba(24, 31, 59, 0.96);
+        --line: rgba(255, 255, 255, 0.08);
+        --text: #ecf2ff;
+        --muted: #9aa8c7;
+        --accent: #63d0ff;
+        --accent-2: #8cffc1;
+        --danger: #ff7d7d;
+        --shadow: 0 24px 90px rgba(0, 0, 0, 0.34);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(99, 208, 255, 0.16), transparent 30%),
+          radial-gradient(circle at top right, rgba(140, 255, 193, 0.12), transparent 24%),
+          linear-gradient(180deg, #080b16 0%, #0b1020 100%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .shell {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 28px 18px 56px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 16px;
+        align-items: stretch;
+        margin-bottom: 18px;
+      }
+
+      .card {
+        background: linear-gradient(180deg, var(--panel), rgba(10, 16, 32, 0.92));
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero-copy {
+        padding: 28px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(99, 208, 255, 0.12);
+        color: var(--accent);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 16px 0 10px;
+        font-size: clamp(30px, 4vw, 52px);
+        line-height: 1.02;
+      }
+
+      .lead {
+        max-width: 70ch;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .auth-box {
+        padding: 22px;
+        display: grid;
+        gap: 12px;
+        align-content: center;
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      input, select, button, textarea {
+        font: inherit;
+      }
+
+      input, select {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line);
+        color: var(--text);
+        border-radius: 14px;
+        padding: 14px 14px;
+        outline: none;
+      }
+
+      input::placeholder { color: #7483a8; }
+
+      button {
+        border: 0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        background: linear-gradient(135deg, var(--accent), #75a9ff);
+        color: #04111f;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 120ms ease, opacity 120ms ease;
+      }
+
+      button.secondary {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        border: 1px solid var(--line);
+      }
+
+      button.danger {
+        background: rgba(255, 125, 125, 0.12);
+        color: #ffb0b0;
+        border: 1px solid rgba(255, 125, 125, 0.22);
+      }
+
+      button:hover { transform: translateY(-1px); }
+      button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+      .status {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 18px 0;
+      }
+
+      .toolbar input, .toolbar select {
+        min-width: 180px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+
+      .stat {
+        padding: 18px;
+        background: linear-gradient(180deg, var(--panel-2), rgba(15, 20, 40, 0.94));
+        border: 1px solid var(--line);
+        border-radius: 20px;
+      }
+
+      .stat .label {
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .stat .value {
+        font-size: 30px;
+        margin-top: 8px;
+        font-weight: 800;
+      }
+
+      .sections {
+        display: grid;
+        gap: 16px;
+      }
+
+      .section {
+        padding: 18px;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .section-head .small {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .table-wrap {
+        overflow: auto;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      th, td {
+        text-align: left;
+        padding: 14px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        vertical-align: top;
+        font-size: 14px;
+      }
+
+      th {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        font-size: 12px;
+        color: var(--text);
+        white-space: nowrap;
+      }
+
+      .pill.good { background: rgba(140, 255, 193, 0.13); color: #a9ffd0; }
+      .pill.warn { background: rgba(255, 208, 99, 0.13); color: #ffe5a4; }
+      .pill.bad { background: rgba(255, 125, 125, 0.13); color: #ffb0b0; }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .message {
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(99, 208, 255, 0.08);
+        border: 1px solid rgba(99, 208, 255, 0.18);
+        color: #bcecff;
+      }
+
+      .message.error {
+        background: rgba(255, 125, 125, 0.1);
+        border-color: rgba(255, 125, 125, 0.22);
+        color: #ffb0b0;
+      }
+
+      @media (max-width: 1100px) {
+        .hero, .grid { grid-template-columns: 1fr; }
+        table { min-width: 880px; }
+      }
+
+      @media (max-width: 720px) {
+        .shell { padding-inline: 12px; }
+        .hero-copy, .auth-box, .section { padding: 16px; }
+        .field-row { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="card hero-copy">
+          <div class="eyebrow">Fetcha Admin Console</div>
+          <h1>Verify providers, inspect bookings, and trace payments from one screen.</h1>
+          <p class="lead">
+            This dashboard talks directly to the protected admin API. Use it to review unverified vendors,
+            approve or suspend them, and inspect customers, bookings, and Squad transactions without leaving the backend.
+          </p>
+          <div class="toolbar">
+            <button class="secondary" id="refreshAllBtn">Refresh all sections</button>
+            <button class="secondary" id="loadDemoBtn">Load unverified providers</button>
+          </div>
+          <div id="notice" class="status">Enter your admin token on the right, then load the dashboard.</div>
+        </div>
+        <div class="card auth-box">
+          <div class="status">Admin token</div>
+          <div class="field-row">
+            <input id="tokenInput" type="password" placeholder="Bearer token from ADMIN_TOKEN" autocomplete="off" />
+            <button id="saveTokenBtn">Save token</button>
+          </div>
+          <div class="actions">
+            <button id="connectBtn">Load dashboard</button>
+            <button class="secondary" id="clearTokenBtn">Clear token</button>
+          </div>
+          <div class="message" id="authMessage">Token is stored locally in your browser only.</div>
+        </div>
+      </section>
+
+      <section class="grid" id="statsGrid"></section>
+
+      <section class="sections">
+        <article class="card section">
+          <div class="section-head">
+            <div>
+              <h2>Providers</h2>
+              <div class="small">Verify or suspend vendors here.</div>
+            </div>
+            <div class="actions">
+              <select id="providerFilter">
+                <option value="">All providers</option>
+                <option value="false">Unverified</option>
+                <option value="true">Verified</option>
+              </select>
+              <button class="secondary" id="refreshProvidersBtn">Refresh</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Service</th>
+                  <th>Status</th>
+                  <th>State</th>
+                  <th>Joined</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="providersBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card section">
+          <div class="section-head">
+            <div>
+              <h2>Customers</h2>
+              <div class="small">Track onboarding and active search states.</div>
+            </div>
+            <button class="secondary" id="refreshCustomersBtn">Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>State</th>
+                  <th>Joined</th>
+                  <th>Booking</th>
+                </tr>
+              </thead>
+              <tbody id="customersBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card section">
+          <div class="section-head">
+            <div>
+              <h2>Bookings</h2>
+              <div class="small">Payment and fulfilment trail.</div>
+            </div>
+            <div class="actions">
+              <select id="bookingFilter">
+                <option value="">All bookings</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="disputed">Disputed</option>
+              </select>
+              <button class="secondary" id="refreshBookingsBtn">Refresh</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Provider</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                  <th>Payment Ref</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody id="bookingsBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card section">
+          <div class="section-head">
+            <div>
+              <h2>Transactions</h2>
+              <div class="small">Filter Squad payments and payouts.</div>
+            </div>
+            <div class="actions">
+              <select id="transactionTypeFilter">
+                <option value="">All types</option>
+                <option value="verification_fee">Verification fee</option>
+                <option value="booking_payment">Booking payment</option>
+                <option value="payout">Payout</option>
+              </select>
+              <select id="transactionStatusFilter">
+                <option value="">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="success">Success</option>
+                <option value="failed">Failed</option>
+              </select>
+              <button class="secondary" id="refreshTransactionsBtn">Refresh</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ref</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Phone</th>
+                  <th>Amount</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="transactionsBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const state = {
+        token: localStorage.getItem('fetchaAdminToken') || '',
+      };
+
+      const tokenInput = document.getElementById('tokenInput');
+      const notice = document.getElementById('notice');
+      const authMessage = document.getElementById('authMessage');
+      const statsGrid = document.getElementById('statsGrid');
+      const providersBody = document.getElementById('providersBody');
+      const customersBody = document.getElementById('customersBody');
+      const bookingsBody = document.getElementById('bookingsBody');
+      const transactionsBody = document.getElementById('transactionsBody');
+
+      tokenInput.value = state.token;
+
+      const formatDate = (value) => {
+        if (!value) return '—';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
+      };
+
+      const asJson = async (response) => {
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.message || payload.error || `Request failed with ${response.status}`);
+        }
+        return payload;
+      };
+
+      const authHeaders = () => ({
+        Authorization: `Bearer ${state.token}`,
+        'Content-Type': 'application/json',
+      });
+
+      const setNotice = (message, error = false) => {
+        notice.textContent = message;
+        notice.style.color = error ? '#ffb0b0' : '#9aa8c7';
+      };
+
+      const setAuthMessage = (message, error = false) => {
+        authMessage.textContent = message;
+        authMessage.className = error ? 'message error' : 'message';
+      };
+
+      const saveToken = () => {
+        state.token = tokenInput.value.trim();
+        localStorage.setItem('fetchaAdminToken', state.token);
+        setAuthMessage(state.token ? 'Token saved locally. You can load the dashboard now.' : 'Token cleared.');
+      };
+
+      const api = async (path, options = {}) => {
+        if (!state.token) {
+          throw new Error('Add your admin token first.');
+        }
+
+        const response = await fetch(`/api/admin${path}`, {
+          ...options,
+          headers: {
+            ...authHeaders(),
+            ...(options.headers || {}),
+          },
+        });
+
+        return asJson(response);
+      };
+
+      const statCard = (label, value) => `
+        <div class="stat card">
+          <div class="label">${label}</div>
+          <div class="value">${value}</div>
+        </div>
+      `;
+
+      const providerPill = (provider) => {
+        if (provider.suspended) return '<span class="pill bad">Suspended</span>';
+        if (provider.verified) return '<span class="pill good">Verified</span>';
+        return '<span class="pill warn">Unverified</span>';
+      };
+
+      const statusPill = (status) => {
+        if (!status) return '<span class="pill">Unknown</span>';
+        const lower = String(status).toLowerCase();
+        if (['success', 'verified', 'active', 'completed', 'confirmed'].includes(lower)) return `<span class="pill good">${status}</span>`;
+        if (['failed', 'disputed', 'suspended'].includes(lower)) return `<span class="pill bad">${status}</span>`;
+        return `<span class="pill warn">${status}</span>`;
+      };
+
+      const renderStats = (data) => {
+        statsGrid.innerHTML = [
+          ['Providers', data.totalProviders],
+          ['Verified', data.verifiedProviders],
+          ['Unverified', data.unverifiedProviders],
+          ['Customers', data.totalCustomers],
+          ['Bookings', data.totalBookings],
+          ['Completed bookings', data.completedBookings],
+          ['Transactions', data.totalTransactions],
+          ['Successful tx', data.successfulTransactions],
+        ].map(([label, value]) => statCard(label, value ?? 0)).join('');
+      };
+
+      const renderProviders = (providers) => {
+        providersBody.innerHTML = providers.map((provider) => `
+          <tr>
+            <td>
+              <div style="font-weight:700">${provider.name || 'Unnamed provider'}</div>
+              <div class="status">${provider._id}</div>
+            </td>
+            <td>${provider.phone || '—'}</td>
+            <td>${provider.serviceType || '—'}</td>
+            <td>${providerPill(provider)}</td>
+            <td>${provider.state || '—'}</td>
+            <td>${formatDate(provider.createdAt)}</td>
+            <td>
+              <div class="actions">
+                <button data-verify="${provider._id}" ${provider.verified ? 'disabled' : ''}>Verify</button>
+                <button class="danger" data-suspend="${provider._id}" ${provider.suspended ? 'disabled' : ''}>Suspend</button>
+              </div>
+            </td>
+          </tr>
+        `).join('') || '<tr><td colspan="7">No providers found.</td></tr>';
+
+        providersBody.querySelectorAll('[data-verify]').forEach((button) => {
+          button.addEventListener('click', async () => {
+            const providerId = button.getAttribute('data-verify');
+            button.disabled = true;
+            try {
+              await api(`/providers/${providerId}/verify`, { method: 'PATCH' });
+              await loadProviders();
+              await loadStats();
+              setNotice('Provider verified successfully.');
+            } catch (error) {
+              setNotice(error.message, true);
+              button.disabled = false;
+            }
+          });
+        });
+
+        providersBody.querySelectorAll('[data-suspend]').forEach((button) => {
+          button.addEventListener('click', async () => {
+            const providerId = button.getAttribute('data-suspend');
+            button.disabled = true;
+            try {
+              await api(`/providers/${providerId}/suspend`, { method: 'PATCH', body: JSON.stringify({ suspended: true }) });
+              await loadProviders();
+              await loadStats();
+              setNotice('Provider suspended successfully.');
+            } catch (error) {
+              setNotice(error.message, true);
+              button.disabled = false;
+            }
+          });
+        });
+      };
+
+      const renderCustomers = (customers) => {
+        customersBody.innerHTML = customers.map((customer) => `
+          <tr>
+            <td>${customer.name || 'Unnamed customer'}</td>
+            <td>${customer.phone || '—'}</td>
+            <td>${statusPill(customer.state)}</td>
+            <td>${formatDate(customer.createdAt)}</td>
+            <td>${customer.currentBookingId || '—'}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="5">No customers found.</td></tr>';
+      };
+
+      const renderBookings = (bookings) => {
+        bookingsBody.innerHTML = bookings.map((booking) => `
+          <tr>
+            <td>
+              <div style="font-weight:700">${booking.customerId?.name || booking.customerPhone || '—'}</div>
+              <div class="status">${booking.customerId?.phone || ''}</div>
+            </td>
+            <td>
+              <div style="font-weight:700">${booking.providerId?.name || booking.providerPhone || '—'}</div>
+              <div class="status">${booking.providerId?.serviceType || ''}</div>
+            </td>
+            <td>${statusPill(booking.status)}</td>
+            <td>${booking.amount ?? '—'}</td>
+            <td>${booking.squadPaymentRef || '—'}</td>
+            <td>${formatDate(booking.createdAt)}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="6">No bookings found.</td></tr>';
+      };
+
+      const renderTransactions = (transactions) => {
+        transactionsBody.innerHTML = transactions.map((transaction) => `
+          <tr>
+            <td>${transaction.squadRef || '—'}</td>
+            <td>${transaction.type || '—'}</td>
+            <td>${statusPill(transaction.status)}</td>
+            <td>${transaction.phone || '—'}</td>
+            <td>${transaction.amount ?? '—'}</td>
+            <td>${formatDate(transaction.createdAt)}</td>
+            <td>
+              <div class="actions">
+                <button data-requery="${transaction.squadRef}" ${transaction.status === 'success' ? 'disabled' : ''}>Requery</button>
+              </div>
+            </td>
+          </tr>
+        `).join('') || '<tr><td colspan="7">No transactions found.</td></tr>';
+
+        transactionsBody.querySelectorAll('[data-requery]').forEach((button) => {
+          button.addEventListener('click', async () => {
+            const ref = button.getAttribute('data-requery');
+            button.disabled = true;
+            try {
+              const response = await api(`/transactions/${encodeURIComponent(ref)}/requery`, { method: 'POST' });
+              await loadTransactions();
+              await loadProviders();
+              await loadBookings();
+              await loadStats();
+              setNotice(response.data?.resynced ? `Transaction ${ref} resynced successfully.` : `Transaction ${ref} checked, but Squad still reports pending.`);
+            } catch (error) {
+              setNotice(error.message, true);
+              button.disabled = false;
+            }
+          });
+        });
+      };
+
+      const loadStats = async () => {
+        const { data } = await api('/summary');
+        renderStats(data);
+      };
+
+      const loadProviders = async () => {
+        const verified = document.getElementById('providerFilter').value;
+        const query = new URLSearchParams({ limit: '50' });
+        if (verified !== '') query.set('verified', verified);
+        const { data } = await api(`/providers?${query.toString()}`);
+        renderProviders(data.providers || []);
+      };
+
+      const loadCustomers = async () => {
+        const { data } = await api('/customers?limit=50');
+        renderCustomers(data.customers || []);
+      };
+
+      const loadBookings = async () => {
+        const status = document.getElementById('bookingFilter').value;
+        const query = new URLSearchParams({ limit: '50' });
+        if (status) query.set('status', status);
+        const { data } = await api(`/bookings?${query.toString()}`);
+        renderBookings(data.bookings || []);
+      };
+
+      const loadTransactions = async () => {
+        const type = document.getElementById('transactionTypeFilter').value;
+        const status = document.getElementById('transactionStatusFilter').value;
+        const query = new URLSearchParams({ limit: '50' });
+        if (type) query.set('type', type);
+        if (status) query.set('status', status);
+        const { data } = await api(`/transactions?${query.toString()}`);
+        renderTransactions(data.transactions || []);
+      };
+
+      const loadAll = async () => {
+        setNotice('Loading dashboard data...');
+        await Promise.all([loadStats(), loadProviders(), loadCustomers(), loadBookings(), loadTransactions()]);
+        setNotice('Dashboard loaded successfully.');
+      };
+
+      document.getElementById('saveTokenBtn').addEventListener('click', () => {
+        saveToken();
+      });
+
+      document.getElementById('clearTokenBtn').addEventListener('click', () => {
+        state.token = '';
+        tokenInput.value = '';
+        localStorage.removeItem('fetchaAdminToken');
+        setAuthMessage('Token cleared.');
+      });
+
+      document.getElementById('connectBtn').addEventListener('click', async () => {
+        saveToken();
+        try {
+          await loadAll();
+        } catch (error) {
+          setNotice(error.message, true);
+        }
+      });
+
+      document.getElementById('refreshAllBtn').addEventListener('click', async () => {
+        try {
+          await loadAll();
+        } catch (error) {
+          setNotice(error.message, true);
+        }
+      });
+
+      document.getElementById('loadDemoBtn').addEventListener('click', async () => {
+        document.getElementById('providerFilter').value = 'false';
+        try {
+          await loadProviders();
+          setNotice('Loaded unverified providers.');
+        } catch (error) {
+          setNotice(error.message, true);
+        }
+      });
+
+      document.getElementById('refreshProvidersBtn').addEventListener('click', async () => {
+        try {
+          await loadProviders();
+        } catch (error) {
+          setNotice(error.message, true);
+        }
+      });
+
+      document.getElementById('refreshCustomersBtn').addEventListener('click', async () => {
+        try {
+          await loadCustomers();
+        } catch (error) {
+          setNotice(error.message, true);
+        }
+      });
+
+      document.getElementById('refreshBookingsBtn').addEventListener('click', async () => {
+        try {
+          await loadBookings();
+        } catch (error) {
+          setNotice(error.message, true);
+        }
+      });
+
+      document.getElementById('refreshTransactionsBtn').addEventListener('click', async () => {
+        try {
+          await loadTransactions();
+        } catch (error) {
+          setNotice(error.message, true);
+        }
+      });
+
+      document.getElementById('providerFilter').addEventListener('change', loadProviders);
+      document.getElementById('bookingFilter').addEventListener('change', loadBookings);
+      document.getElementById('transactionTypeFilter').addEventListener('change', loadTransactions);
+      document.getElementById('transactionStatusFilter').addEventListener('change', loadTransactions);
+
+      if (state.token) {
+        setAuthMessage('Loaded saved token from this browser.');
+      }
+
+      if (state.token) {
+        loadAll().catch((error) => setNotice(error.message, true));
+      }
+    </script>
+  </body>
+  </html>
