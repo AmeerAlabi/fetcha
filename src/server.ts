@@ -22,6 +22,7 @@ app.use('/api/bookings', require('./routes/bookingRoutes').default);
 app.use('/api/transactions', require('./routes/transactionRoutes').default);
 app.use('/api/admin', require('./routes/adminRoutes').default);
 app.use('/webhook', require('./webhooks/squadWebhook').default);
+app.use('/qr', require('./routes/qrRoutes').default);
 
 app.get('/', (_req, res) => res.send('Fetcha backend is running'));
 app.get('/admin', (_req, res) => res.sendFile(path.join(publicDir, 'admin.html')));

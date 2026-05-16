@@ -2,6 +2,7 @@
 // START_BOT=true. Keeping this file light to avoid heavy runtime costs.
 import stateHandler from './stateHandler';
 import qrcode from 'qrcode-terminal';
+import { setLatestQr } from './qrStore';
 import fs from 'fs';
 
 const resolveChromeExecutablePath = () => {
@@ -37,8 +38,14 @@ try {
   });
 
   client.on('qr', (qr: string) => {
+    // store latest QR for HTTP access and still print to terminal
+    try {
+      setLatestQr(qr);
+    } catch (err) {
+      console.warn('[Bot QR] could not store latest QR:', err);
+    }
     qrcode.generate(qr, { small: true });
-    console.log('Scan the QR code above to connect WhatsApp');
+    console.log('Scan the QR code above to connect WhatsApp or visit /qr to fetch an image');
   });
 
   client.on('ready', () => console.log('Fetcha WhatsApp bot is ready'));
