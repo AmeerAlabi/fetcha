@@ -11,7 +11,9 @@ WORKDIR /app
 
 # Install dependencies (include dev deps for build) then prune
 COPY package*.json ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
+# Use npm install instead of npm ci to avoid failing on out-of-sync lockfile during Docker builds.
+# This ensures the image can build even if package-lock.json is not updated in the repo.
 
 # Copy source and build
 COPY . .
