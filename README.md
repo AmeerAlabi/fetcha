@@ -36,6 +36,18 @@ npm install
 npm run build
 npm run dev
 
+## Deploy to Railway (Docker)
+
+1. Push this repository to GitHub.
+2. In Railway, create a new project and connect your GitHub repo. Railway will build the Docker image using the `Dockerfile` in this repo.
+3. Add required environment variables in Railway project settings (at minimum): `MONGODB_URI`, `SQUAD_BASE_URL`, `SQUAD_SECRET_KEY`, `SQUAD_MERCHANT_ID`, `OPENAI_API_KEY`, `CLOUDINARY_*`, `ADMIN_TOKEN`, `START_BOT`.
+4. If you want the WhatsApp bot to run on Railway, ensure persistent storage is attached for `.wwebjs_auth_session_*` folders (or run the bot on a separate VM). Otherwise set `START_BOT=false` in Railway so the server runs without attempting Puppeteer.
+5. Set the Squad webhook URL to `https://<your-railway-url>/webhook/squad`.
+
+Notes:
+- Railway builds will use the `Dockerfile` and install Chromium deps included there.
+- Do NOT commit `.env` or session folders to Git. Rotate any keys that were exposed.
+
 ## Environment Variables
 
 - PORT
