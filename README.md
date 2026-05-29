@@ -1,5 +1,5 @@
 
-## NOTE : IT'S CURRENTLY NOT DEPLOYED, I HAD TO TAKE THE SERVER DUE TO EXPENSES , HOWEVER HERE THE LINK TO A DEMO VIDEO : https://drive.google.com/file/d/1VaSZ6kZrlxHdqqo7TbKfp8KA_QEQtzFL/view?usp=drive_link
+## NOTE : IT'S CURRENTLY NOT DEPLOYED, I HAD TO TAKE THE SERVER DOWN DUE TO EXPENSES , HOWEVER HERE THE LINK TO A DEMO VIDEO : https://drive.google.com/file/d/1VaSZ6kZrlxHdqqo7TbKfp8KA_QEQtzFL/view?usp=drive_link
 
 ## Fetcha
 
